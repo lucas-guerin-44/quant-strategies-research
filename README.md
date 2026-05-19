@@ -6,7 +6,7 @@ Most retail trading research is self-deception: elegant backtests that work beau
 
 Every idea runs the same 8-phase pipeline with **pre-committed kill criteria** at each stage. Flawed theses die in hours, not weeks. Surviving strategies are paper-traded live with an honest research-vs-live calibration loop. The record of what died and why (see [`docs/RESEARCH_NOTES.md`](docs/RESEARCH_NOTES.md)) is as load-bearing as the few that lived.
 
-Built on top of [`backtesting-engine-2.0`](../backtesting-engine-2.0/). The engine repo stays clean; this one is allowed to be messy — thesis docs, demo scripts, failed validations, and tombstoned strategies sit alongside the live-deployable ones.
+Built on top of [`backtesting-engine-2.0`](https://github.com/lucas-guerin-44/backtesting-engine). The engine repo stays clean; this one is allowed to be messy — thesis docs, demo scripts, failed validations, and tombstoned strategies sit alongside the live-deployable ones.
 
 ---
 
