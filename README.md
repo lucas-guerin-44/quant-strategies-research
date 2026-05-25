@@ -38,7 +38,7 @@ Full definition with exact thresholds in [`docs/WORKFLOW.md`](docs/WORKFLOW.md).
 | **5. Parameter sensitivity** | Sweep each parameter ±20%. Honest result is a plateau; a peak is overfit. | Sharpe drops > 50% on any ±20% perturbation, or any config goes negative. |
 | **6. True holdout** | Pick a cutoff after development and re-run on untouched post-cutoff data. | OOS Sharpe degrades by > 0.5 vs IS, or OOS Sharpe < 0. |
 | **7. Cross-strategy correlation** | Correlation vs existing live/validated strategies. | Monthly correlation > 0.3 — unless it wins standalone enough to justify adding as a 2nd bet on the same theme. |
-| **8. Live** | Port to broker platform (QC for daily, MT5 for intraday). Paper-trade 3-6 months. | Live Sharpe trails research by > 70% haircut (empirical retail drag is 0.3-0.6 absolute Sharpe, worse at higher frequency). |
+| **8. Live** | Port to broker platform (MT5 for intraday is the only live path as of 2026-05). Paper-trade 3-6 months. | Live Sharpe trails research by > 25% (relative) haircut. Empirical haircut for clean same-broker single-strategy deploys is 10-25%; multi-strategy event books and CFD→futures porting can stack worse — see `docs/RESEARCH_NOTES.md` lesson #5 for the rewritten framing. To be validated against 6-12 months of live data per deploy. |
 
 The numbers are intentionally conservative. Over-strict criteria kill some real-edge strategies; over-lenient criteria let fake-edge strategies through to live trading where the lesson costs money. The project explicitly biases toward the former.
 
@@ -46,19 +46,44 @@ The numbers are intentionally conservative. Over-strict criteria kill some real-
 
 ## Current status
 
-### Live (MT5 VPS, paper)
+### Live (MT5 VPS)
 
-| Strategy | Instrument | Research Sh | Live Sh | Notes |
-|---|---|---|---|---|
-| **ORB DAX M5 (T+180 LONG-only)** | GER40 CFD | 0.76 | TBD | First live deploy (2026-04-22). LONG-only is the strong leg (shorts shadow-logged). Fade-gap +1.04 under symmetric R:R. 2023-2026 holdout Sh +0.93. Cadence ~3.8/week. |
-| **NDX100 lunch-hour fade (LONG-only)** | NDX100 CFD | 1.02 (LONG-only, holdout +1.51) | TBD | Second live deploy (2026-05-13). Selective outlier-day strategy — ~16 LONG trades/year. Dir-gap +1.87, exceptionally cost-insensitive (Sh +0.72 even at 5pt RT). |
-| **XAU session (Variant C)** | XAUUSD H1 | 0.79 (W4 binding +1.23) | TBD | Third live deploy (2026-05-16). 23:00→08:00 UTC 9h hold with DOWN-med prior-NY filter. Dir-gap +2.28, MDD -3.7%, ~39 trades/yr. Phases 2-7 all PASS in one session. |
+| Strategy | Instrument | Research Sh | Live Sh | Live since | Cadence |
+|---|---|---|---|---|---|
+| **ORB DAX M5 (T+180 LONG-only)** | GER40 CFD | 0.76 | TBD | 2026-04-22 | ~3.8/week |
+| **NDX100 lunch-hour fade (LONG-only)** | NDX100 CFD | 1.02 | TBD | 2026-05-13 | ~16/year |
+| **XAU session (Variant C)** | XAUUSD H1 | 0.79 | TBD | 2026-05-16 | ~39/year |
+| **Event Calendar (4-event book)** | NDX100 H1 | per-event +0.37 to +1.22 | TBD | 2026-05-22 (FOMC) / 2026-05-24 (CPI, RS, NFP) | ~44/year |
+| **XAU break+retest M15 (FADE)** | XAUUSD M15 | 1.49 / W1 +1.50 / W2 +1.70 / W3 +1.36 | TBD | 2026-05-25 (paper, pending) | ~95/year (~1.8/wk) |
+
+Per-strategy thesis, validation trail, and live config: [`experiments/<name>/<name>.md`](experiments/).
+
+#### Book-level performance (5 strategies treated as 8 component PnL series — 4 intraday + 4 events)
+
+Per the internal portfolio_risk_parity audit (inv-vol sizing, monthly rebal, [5%,35%] clip; methodology private). Refresh 2026-05-25 adds `xau_break_retest_m15` (FADE) as the 8th component:
+
+| Metric | Equal-weight | Risk-parity | Realistic live (after blended haircut) |
+|---|---|---|---|
+| Annualized book Sharpe | +1.90 | **+2.33** | **+1.4 to +1.8** |
+| Book CAGR (at audit notional) | +2.74% | +2.70% | depends on live sizing — see below |
+| Book MDD (at audit notional) | -1.22% | -0.75% | -2% to -5% (1.5-3× research, regime/small-n) |
+| Time-in-DD | 86.22% | 82.55% | similar |
+| Cross-strategy max pairwise corr | all in [-0.15, +0.15] | same | < 0.30 expected live |
+| Regime stability (4-window Sh) | 4/4 positive | 4/4 positive lift (W1 +0.57, W2 +0.31, W3 +0.41, W4 +0.28) | holdout-positive ≠ live-positive; validate over 6-12 months |
+
+The +2.33 risk-parity Sharpe is the **canonical research book number** (lifted from +1.92 on the prior 7-component book). The new `xau_break_retest_m15` component is the lowest-vol contributor (~1.8% ann) with near-zero correlation to everything else (vs `xau_session` specifically: -0.02 despite both being XAU — different TF, session and direction), so it absorbs ~26% of the inv-vol weight and meaningfully tightens both the Sharpe (+0.43 lift over EQ vs the prior +0.21 lift) and the MDD (-0.75% vs the prior -1.59%, ~50% shallower). The RP overlay's value-add grew because the new component's vol gap vs the rest of the book is wider than the prior 7-component spread.
+
+Deploy form remains **static quarterly EA sizing review**, not a dynamic overlay EA (the time-varying part of the inv-vol overlay adds nothing per the audit). xau_br_m15's inv-vol target is ~26% book weight (~2.06% risk/trade at 8-component scale) but recommended deploy is **0.50% (Validate tier)** during the initial paper window — the strategy is brand-new and the Phase 3 spread audit was originally a (proxy-based) FAIL, since resolved by real tick data but worth a fresh tick log re-check at deploy time.
+
+**Realism call:** 4 of 5 strategies are < 6 months live (paper); `xau_break_retest_m15` is brand-new and not yet paper-deployed. At < 200 live trades per component σ(realized Sharpe) ≈ 0.7 — a single year of measured haircut is dominated by sampling noise, not by underlying degradation (per [RESEARCH_NOTES.md lesson #5](docs/RESEARCH_NOTES.md)). The +1.4 to +1.8 expected live book Sh is the modeled prior, not a measurement; the true validation horizon is 6-12 months of concurrent live data, with the event book and the new M15 leg needing the longer end (sparse-event cadence + first-deploy spread-realization risk respectively). The book Sharpe could realistically land anywhere in **+1.0 to +2.0** in year one, with the lower tail driven by event-strategy haircuts, an xau_br_m15 spread blow-out, or a single regime break (e.g. correlated tail in a vol-shock that affects 3+ legs simultaneously).
+
+**Book-level reference**: sizing tiers, validation gates (paper → real money → half-Kelly), review cadence, and the candid fears-and-concerns list live in [`docs/BOOK_PLAN.md`](docs/BOOK_PLAN.md). Per-strategy live tracking is in [`live_tracking/<name>.md`](live_tracking/).
 
 ### Retired from live
 
-| Strategy | Was on | Retired | Notes |
+| Strategy | Was on | Retired | Reason |
 |---|---|---|---|
-| **XS-momentum long-only** | QC/IB paper (research Sh 0.92 → live 0.35) | 2026-05 | Retired alongside the QC-as-live-platform decision. Canonical research-to-live-haircut reference (-0.57 Sh absolute drag). |
+| **XS-momentum long-only** | QC/IB paper (research Sh 0.92 → live 0.35) | 2026-05 | QC platform retired. See [`experiments/xs_momentum/`](experiments/xs_momentum/) for the haircut post-mortem. |
 
 ### Validated phases 2-7, deploy blocked by broker access
 
@@ -195,20 +220,7 @@ python experiments/softs_ensemble/softs_ensemble_regime_sens_oos.py
 python experiments/gold_trend/single_instrument_scan.py
 ```
 
-The intraday ORB work lives in `experiments/orb/` (instrument-agnostic — swap via env vars):
-
-```bash
-# Phase 2 baseline on any instrument
-ORB_SYMBOL=GER40  ORB_SESSION=EU python experiments/orb/orb_demo.py
-ORB_SYMBOL=NDX100 ORB_SESSION=US python experiments/orb/orb_demo.py
-ORB_SYMBOL=UK100  ORB_SESSION=UK python experiments/orb/orb_demo.py
-
-# Refinement diagnostic: symmetric R:R + TOD-exit sweep + OR-width filter
-ORB_SYMBOL=GER40  ORB_SESSION=EU python experiments/orb/orb_refine.py
-
-# Regime breakdown + fade-test on leading candidates (run after orb_refine.py picks a winner)
-ORB_SYMBOL=GER40  ORB_SESSION=EU python experiments/orb/orb_holdout.py
-```
+Deployed-strategy research (orb, lunch_fade, xau_session, macro-event book, xau_break_retest_m15, and the portfolio_risk_parity overlay) is kept private — full thesis docs, demo scripts, params, and EAs are not part of the public repo. Rejected experiments under `experiments/<name>/` are the public-facing examples of the same pipeline applied end-to-end.
 
 ---
 
@@ -245,7 +257,7 @@ Distilled from the strategies that died. Full rolling log in [`docs/RESEARCH_NOT
 
 3. **"Different mechanic, same universe" = same bet.** TSMOM and XS-mom on the same instruments correlated +0.69 despite opposite-looking math. For real diversification you need a different factor OR a different market.
 
-4. **Research backtests overestimate live Sharpe by 0.3-0.6 absolute.** Observed gap from this project: XS-mom 0.92 → 0.35 live (QC). Not a 50% ratio — a roughly fixed absolute drag from costs + execution + regime narrowness.
+4. **Research-to-live Sharpe haircut is typically 10-25% relative for clean single-strategy same-broker deploys** — not the 50-70% / 0.3-0.6-absolute number this lesson originally claimed. The XS-mom 0.92 → 0.35 QC observation that anchored the old wording was inflated by (a) Sharpe-formula mismatch (QC reports rf-subtracted, research reports raw — worth ~0.2-0.3 absolute alone) and (b) cross-platform porting drag (CFD research → QC futures execution model). See `docs/RESEARCH_NOTES.md` lesson #5 for the full rewrite. To be re-validated against 6-12 months of live data per deploy.
 
 5. **Regime decay ≠ bad strategy, but still a REJECT.** VIX VRP had Sharpe 1.14 in 2015-2017 and -0.19 in 2024-2026. Forward-looking window is all that matters for deployment; "worked in the right era" doesn't get a pass.
 

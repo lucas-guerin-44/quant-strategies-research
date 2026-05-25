@@ -77,7 +77,7 @@ Given the parent insight (fade beats ORB baseline by ~0.17 Sharpe at 1:1 R:R on 
 - Profit factor **1.1-1.4**.
 - Max DD **8-18%**.
 
-After 50-70% Sharpe haircut for live conditions, target live Sharpe **0.15-0.35**.
+After 10-25% Sharpe haircut for live conditions (per the rewritten lesson #5), target live Sharpe **0.25-0.55**. To be validated against 6-12 months of live data.
 
 ## Fail conditions (pre-committed)
 

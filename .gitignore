@@ -47,8 +47,50 @@ exports/
 # Live deployment artifacts (MT5 EAs, QC algos) — not published
 deploy/
 /docs/mq5_deploy.md
+/docs/BOOK_PLAN.md
 
 # Opinionated per-collaborator working notes
 CLAUDE.md
 .claude
+
+# Live paper/real tracking — private, not for publication
+live_tracking/
+
+
+# Live deal-history snapshots from book_checkup.py — private, account-bound
+live_data/
+
+# Broker exports + datalake API responses — personal data, never commit.
+# Includes MT5 Trades Reports, HTML history exports, ad-hoc API JSON dumps.
+*.xlsx
+*.xls
+*.htm
+*.html
+response_*.json
+Trades Report*
+*_export_*
+
+# Memory / agent state (in case ever moved into-repo)
+memory/
+.memory/
+
+# Live / deployed-strategy research — edge-bearing, never publish.
+# All currently-live strategies + the portfolio overlay (which depends on
+# their outputs) live under experiments/_live/. Rejected/methodology
+# experiments stay at experiments/<name>/ and remain public.
+experiments/_live/
+# Personal review + private diagnostics
+experiments/book_review/
+experiments/portfolio_diagnostics/
+# Experiments that incorporate personal-trade archaeology (read the private
+# discretionary xlsx) — thesis docs leak trading patterns.
+experiments/xau_imbalance/
+experiments/xau_imbalance_m15/
+
+# Live-book personal tools — these enumerate deployed magic numbers / priors
+# (book_checkup) or read personal broker exports (plot_track_record).
+# Rest of scripts/ is generic infra and stays public.
+scripts/book_checkup.py
+scripts/plot_track_record.py
+
 

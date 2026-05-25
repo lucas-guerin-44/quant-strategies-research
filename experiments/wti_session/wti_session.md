@@ -171,8 +171,9 @@ methodology transfers and cross-asset comparison is honest).
 These are LOCKED in before running the Phase 1 simulator. Any failure → REJECT.
 
 - **Full-sample net Sharpe > +0.30** at 5 bp RT cost (research bar; expect
-  live degradation ~0.3-0.6 absolute Sharpe per
-  [[project_research_to_qc_degradation]])
+  10-25% relative live haircut per rewritten lesson #5 in
+  [[project_research_to_qc_degradation]] — to be validated against 6-12
+  months of live data)
 - **W4 net Sharpe > +0.40** at 5 bp RT cost (binding constraint per
   [[feedback_btc_w4_floor_binding]])
 - **MDD < 20%** on FULL

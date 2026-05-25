@@ -4,7 +4,7 @@ Tiingo's daily endpoint returns split+dividend-adjusted prices out of the
 box (``adjOpen/adjHigh/adjLow/adjClose``), which is what we want for
 single-name equity research.
 
-Requires ``TIINGO_API_KEY`` in ``.env``. Free tier: 500 req/hour, 50 req/day
+Requires ``TIINGO_API_KEY`` in ``.env``. Free tier: 50 req/hour, 1000 req/day
 (practical for our 20-pair universe when re-fetches are cached).
 
 Usage::

@@ -1,0 +1,139 @@
+
+================================================================================
+  Loading universe + calendar + D1 bars
+================================================================================
+
+  universe size: 168
+  calendar rows: 13419  (168 tickers, 1999-03-31 -> 2026-05-22)
+  bars loaded: 168/168  (missing: 0)
+  calendar events with bars: 13419
+
+================================================================================
+  Phase 1 — per-event PEAD (baseline: drift, HOLD=20, MIN_SUE=5%, cost=10bp)
+================================================================================
+
+  [baseline (drift)]
+    period     : 2015-01-27 -> 2026-04-24 (11.2y)
+    total ret  : +117.83%
+    CAGR       : +7.17%
+    Sharpe     : +0.76
+    Max DD     : -95.44%  (entry-day basket — proxy)
+    MDD (conc) : -24.76%  total_ret_conc +202.35%
+    events     : 1663  (148.0/yr)
+    win rate   : 53.6%
+    profit fac : 1.24
+    avg win    : +7.703%   avg loss: -7.194%
+
+================================================================================
+  Phase 1 — kill criteria
+================================================================================
+
+    Sharpe > 0.30   : PASS  (+0.76)
+    Concurrent MDD<25%: PASS  (-24.76%)
+    Events >= 500    : PASS  (1663)
+    WR>=50 or PF>=1.1: PASS  (WR 53.6%, PF 1.24)
+
+================================================================================
+  Phase 1 — regime breakdown
+================================================================================
+
+  2015-2019 pre-COVID    CAGR  +11.68%  Sharpe  +2.77  MDD  -19.24%  events    43
+  2020-2022 vol          CAGR  -14.06%  Sharpe  +0.61  MDD  -95.44%  events   353
+  2023-2026 holdout      CAGR  +23.30%  Sharpe  +0.77  MDD  -85.50%  events  1267
+
+================================================================================
+  Phase 1 — direction null check (FADE: long losers, short winners)
+================================================================================
+
+  [fade null]
+    period     : 2015-01-27 -> 2026-04-24 (11.2y)
+    total ret  : -99.82%
+    CAGR       : -43.00%
+    Sharpe     : -0.95
+    Max DD     : -99.86%  (entry-day basket — proxy)
+    MDD (conc) : -73.49%  total_ret_conc -73.21%
+    events     : 1663  (148.0/yr)
+    win rate   : 45.3%
+    profit fac : 0.77
+    avg win    : +7.164%   avg loss: -7.749%
+
+  direction-gap (drift - fade) = +1.71
+    PASS: drift has directional content vs fade.
+
+================================================================================
+  Phase 1 — HOLD_DAYS sweep (drift)
+================================================================================
+
+  HOLD=  1d  Sharpe  +0.15  MDD  -62.37%  events  1726
+  HOLD=  5d  Sharpe  +0.01  MDD  -91.38%  events  1718
+  HOLD= 10d  Sharpe  +0.43  MDD  -93.65%  events  1714
+  HOLD= 20d  Sharpe  +0.76  MDD  -95.44%  events  1663
+  HOLD= 40d  Sharpe  +0.79  MDD  -99.87%  events  1636
+  HOLD= 60d  Sharpe  +1.05  MDD  -99.88%  events  1626
+
+================================================================================
+  Phase 1 — MIN_SUE sweep (drift, HOLD=20)
+================================================================================
+
+  MIN_SUE=  0.0%  Sharpe  +0.64  events  2729
+  MIN_SUE=  2.5%  Sharpe  +0.70  events  2163
+  MIN_SUE=  5.0%  Sharpe  +0.76  events  1663
+  MIN_SUE= 10.0%  Sharpe  +0.64  events  1052
+  MIN_SUE= 20.0%  Sharpe  +0.30  events   579
+
+================================================================================
+  Phase 1 — cost sensitivity (drift, HOLD=20)
+================================================================================
+
+  cost= 0.0bp  Sharpe  +0.86
+  cost= 5.0bp  Sharpe  +0.81
+  cost=10.0bp  Sharpe  +0.76
+  cost=20.0bp  Sharpe  +0.66
+  cost=30.0bp  Sharpe  +0.57
+
+================================================================================
+  Phase 2 — cross-sectional weekly basket (drift, HOLD=20, top/bot 20%)
+================================================================================
+
+  [xs drift]
+    period     : 2021-10-18 -> 2026-04-20 (4.5y)
+    total ret  : -45.78%
+    CAGR       : -12.71%
+    Sharpe     : -0.55
+    Max DD     : -54.87%
+    weeks      : 107  (23.8/yr)
+    week WR    : 48.6%
+    avg n_evts : 13.0
+
+================================================================================
+  Phase 2 — XS regime breakdown
+================================================================================
+
+  2015-2019 pre-COVID    (weeks=0, insufficient)
+  2020-2022 vol          CAGR   -2.00%  Sharpe  +0.04  MDD  -22.85%  weeks   22
+  2023-2026 holdout      CAGR  -16.65%  Sharpe  -0.69  MDD  -54.87%  weeks   85
+
+================================================================================
+  Phase 2 — XS null check (fade)
+================================================================================
+
+  [xs fade null]
+    period     : 2021-10-18 -> 2026-04-20 (4.5y)
+    total ret  : +7.33%
+    CAGR       : +1.58%
+    Sharpe     : +0.29
+    Max DD     : -40.20%
+    weeks      : 107  (23.8/yr)
+    week WR    : 47.7%
+    avg n_evts : 13.0
+
+  XS direction-gap = -0.83
+
+================================================================================
+  Summary
+================================================================================
+
+  Universe:    168 tickers with bars (of 168 requested)
+  Calendar:    13419 events  (1999-03-31 -> 2026-05-22)
+  Phase 1 Sh:  drift +0.76 / fade -0.95 / gap +1.71
+  Phase 2 Sh:  drift -0.55 / fade +0.29 / gap -0.83

@@ -102,7 +102,7 @@ Exceptionally cost-robust. The gross edge is large relative to spread — the bi
 **Deploy-readiness qualifiers**:
 
 1. **Overnight financing**: at current ECB rates (~3.5%) + CFD financing spread (~2%), carrying DAX CFD long overnight costs ~1.5-2.5pt/night. This is a 10-15 bps drag per trade that the 1pt RT spread model doesn't capture. Conservative live-cost estimate: ~4pt-equivalent, giving research-Sharpe +0.67 at 3pt extrapolated to +0.60-0.65 net of financing. Still positive.
-2. **Live Sharpe expectation** after standard 50-70% haircut on +0.80 research → +0.24 to +0.40.
+2. **Live Sharpe expectation** after standard 10-25% haircut on +0.80 research → +0.60 to +0.72. (Moot — QC futures validation invalidated this; thesis preserved for tombstoning only.)
 3. ~~**Blend with ORB T+180 LONG-only**~~ — not pursued. The QC validation (see below) invalidated the overnight leg's research edge; blending would drag ORB down.
 
 ## QC futures validation — 2026-04-20

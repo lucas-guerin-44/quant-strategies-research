@@ -1,0 +1,141 @@
+
+================================================================================
+  Loading M5 bars for OPEX-pin single-stock basket
+================================================================================
+
+  LULU   bars= 84279  range=2021-12-10->2026-05-22  OPEX-days=52
+  COIN   bars= 41630  range=2024-03-13->2026-05-22  OPEX-days=26
+  MSTR   bars= 31020  range=2024-10-02->2026-05-22  OPEX-days=19
+  NFLX   bars= 89403  range=2021-09-03->2026-05-22  OPEX-days=55
+  SHOP   bars= 89436  range=2021-09-03->2026-05-22  OPEX-days=55
+  CRWD   bars= 84296  range=2021-12-10->2026-05-22  OPEX-days=52
+  NET    bars= 49124  range=2023-10-19->2026-05-22  OPEX-days=31
+  AVGO   bars= 89425  range=2021-09-03->2026-05-22  OPEX-days=55
+  ASML   bars= 86235  range=2021-09-03->2026-05-22  OPEX-days=55
+  MU     bars= 89404  range=2021-09-03->2026-05-22  OPEX-days=55
+  ROKU   bars= 84265  range=2021-12-10->2026-05-22  OPEX-days=52
+  DOCU   bars= 84294  range=2021-12-10->2026-05-22  OPEX-days=52
+  PLTR   bars= 84299  range=2021-12-10->2026-05-22  OPEX-days=52
+  SNOW   bars= 49125  range=2023-10-19->2026-05-22  OPEX-days=31
+  NOW    bars= 49128  range=2023-10-19->2026-05-22  OPEX-days=31
+
+================================================================================
+  Baseline (fade, OPEX-only, AM=120min, PM=385min, MIN_DIST=0.50%, cost=15bp)
+================================================================================
+
+  [basket fade]
+    period   : 2021-09-17 -> 2026-05-15 (4.7y)
+    total ret: -13.02%  CAGR -2.95%
+    Sharpe   : -1.24
+    Max DD   : -13.03%
+    events   : 442  (94.9/yr)  (across 15 tickers)
+    WR / PF  : 42.3% / 0.69
+    avg w/l  : +1.074% / -1.142%
+
+================================================================================
+  Phase 2 kill criteria
+================================================================================
+
+    Sharpe > 0.30    : FAIL  (-1.24)
+    MDD < 25%        : PASS  (-13.03%)
+    Events >= 300    : PASS  (442)
+    WR>=50 or PF>=1.1: FAIL  (WR 42.3%, PF 0.69)
+
+================================================================================
+  Regime breakdown
+================================================================================
+
+  2019-2020 pre/COVID    (n=0, insufficient)
+  2021-2022 vol          CAGR   -3.56%  Sharpe  -1.12  MDD   -4.54%  events   82
+  2023-2026 holdout      CAGR   -2.81%  Sharpe  -1.27  MDD   -8.84%  events  360
+
+================================================================================
+  Per-ticker breakdown (full sample)
+================================================================================
+
+  NET     n= 24  Sh  +1.36  mean +0.28%  WR  45.8%
+  ROKU    n= 39  Sh  +1.21  mean +0.23%  WR  53.8%
+  NOW     n= 18  Sh  +0.67  mean +0.06%  WR  44.4%
+  MSTR    n= 13  Sh  +0.12  mean +0.02%  WR  53.8%
+  NFLX    n= 41  Sh  -0.66  mean -0.08%  WR  39.0%
+  ASML    n= 35  Sh  -1.21  mean -0.10%  WR  40.0%
+  SNOW    n= 21  Sh  -1.21  mean -0.16%  WR  38.1%
+  PLTR    n= 35  Sh  -1.46  mean -0.24%  WR  42.9%
+  LULU    n= 33  Sh  -1.98  mean -0.18%  WR  39.4%
+  DOCU    n= 29  Sh  -2.02  mean -0.50%  WR  48.3%
+  COIN    n= 18  Sh  -2.19  mean -0.59%  WR  33.3%
+  MU      n= 40  Sh  -2.29  mean -0.29%  WR  47.5%
+  SHOP    n= 33  Sh  -2.41  mean -0.44%  WR  39.4%
+  CRWD    n= 34  Sh  -2.56  mean -0.53%  WR  38.2%
+  AVGO    n= 29  Sh  -3.63  mean -0.48%  WR  31.0%
+
+================================================================================
+  Variant sweep — MIN_DIST_FROM_PIN (% — minimum spot-to-strike at 11:30)
+================================================================================
+
+  MIN_DIST=0.25%  Sharpe -1.37  events  515
+  MIN_DIST=0.50%  Sharpe -1.24  events  442
+  MIN_DIST=1.00%  Sharpe -1.19  events  278
+  MIN_DIST=1.50%  Sharpe -1.02  events  136
+  MIN_DIST=2.00%  Sharpe -1.51  events   78
+
+================================================================================
+  Variant sweep — PM exit minute (385=15:55, 360=15:30, 330=15:00, 300=14:30)
+================================================================================
+
+  PM=240min  Sharpe -1.24  events  442
+  PM=300min  Sharpe -1.28  events  442
+  PM=330min  Sharpe -1.18  events  442
+  PM=360min  Sharpe -1.24  events  442
+  PM=385min  Sharpe -1.24  events  442
+
+================================================================================
+  Variant sweep — cost sensitivity (bps RT)
+================================================================================
+
+  cost= 0.0bp  Sharpe -0.33
+  cost= 5.0bp  Sharpe -0.64
+  cost=15.0bp  Sharpe -1.24
+  cost=30.0bp  Sharpe -2.15
+  cost=50.0bp  Sharpe -3.37
+
+================================================================================
+  Null check — continuation direction (anti-pin)
+================================================================================
+
+  [basket cont]
+    period   : 2021-09-17 -> 2026-05-15 (4.7y)
+    total ret: -2.72%  CAGR -0.59%
+    Sharpe   : -0.58
+    Max DD   : -5.99%
+    events   : 442  (94.9/yr)  (across 15 tickers)
+    WR / PF  : 46.2% / 0.84
+    avg w/l  : +1.091% / -1.112%
+
+  direction-gap (fade - cont) = -0.66
+    INVERTED: continuation wins — pin thesis sign-wrong on this basket.
+
+================================================================================
+  All-Friday null (does OPEX-day calendar lock matter?)
+================================================================================
+
+  [basket all-Friday fade]
+    period   : 2021-09-03 -> 2026-05-22 (4.7y)
+    total ret: -36.80%  CAGR -9.27%
+    Sharpe   : -1.18
+    Max DD   : -36.86%
+    events   : 1952  (414.0/yr)  (across 15 tickers)
+    WR / PF  : 43.4% / 0.71
+    avg w/l  : +0.999% / -1.074%
+
+  OPEX-only Sharpe - all-Friday Sharpe = -0.06
+    FAIL: OPEX-only not better than all-Friday — calendar lock not load-bearing.
+
+================================================================================
+  Summary
+================================================================================
+
+  Basket: 15 tickers
+  Phase 2 basket fade: Sharpe -1.24  events 442
+  Direction-gap (fade-cont): -0.66
+  OPEX-vs-all-Friday delta: -0.06

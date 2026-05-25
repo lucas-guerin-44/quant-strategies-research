@@ -2,7 +2,7 @@
 
 **Status**: Phases 2-6 PASS — ready for Phase 7 (already done: corr ≈ 0) and Phase 8 (QC deployment)  
 **Verdict**: KEEP — preferred variant is **IEF-trend MH** (1M + 3M + 12M multi-horizon per Moskowitz/Ooi/Pedersen). All phases cleared: Sharpe 0.67 on full 24y sample, plateau on ±20% param change, 4/4 regime windows positive, OOS Sharpe 0.42 (2015-2026), degradation 0.40 (below 0.5 kill). Monthly correlation with XS-mom ≈ 0.   
-Expected live Sharpe after 50-70% haircut: 0.15-0.25 — boring but uncorrelated diversifier.
+Expected live Sharpe after 10-25% haircut on OOS +0.42: 0.32-0.38 — boring but uncorrelated diversifier. (Full-sample +0.67 anchor would give 0.50-0.60 but the OOS number is the honest one.) To be validated against 6-12 months of live data.
 
 ## Thesis (mechanism)
 
