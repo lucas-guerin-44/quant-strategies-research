@@ -36,7 +36,7 @@ sys.path.insert(0, os.path.join(_ROOT, "experiments", "structural_flow_audit"))
 from dotenv import load_dotenv  # noqa: E402
 load_dotenv(os.path.join(_ROOT, ".env"))
 
-from utils import fetch_ohlc  # noqa: E402
+from data import fetch_ohlc  # noqa: E402
 from structural_flow_audit import (  # noqa: E402
     gen_month_end_dates, compute_window_returns, compute_placebo_returns,
 )

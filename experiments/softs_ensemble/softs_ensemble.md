@@ -1,4 +1,4 @@
-# Softs TSMOM ensemble — Phase 1 thesis
+# Softs TSMOM ensemble — VALIDATED_NO_DEPLOY (6-name research PASS; Eightcap-tradeable subset REJECT 2026-05-29)
 
 ## Origin
 
@@ -155,3 +155,41 @@ sizes, below our 5bps research assumption.
 - **Q1 2026 real-OOS** (Jan-Mar 2026, post-validation period): blend +1.10%
   vs B&H basket -6.57%. Strategy stayed flat through the -45.6% COCOA
   crash. Textbook trend-following outcome.
+
+## Eightcap-deployable subset re-validation (2026-05-29) — REJECT
+
+Triggered by the live-book "what can we still add, Eightcap-only" pass. Two-step Phase-0:
+
+1. **Tradeability (MT5 probe — `scripts/mt5_fetch.py --list-symbols`):** Eightcap carries COCOA,
+   COFFEE, COTTON, CORN, LDSUGAR, WHEAT — but **not** soybean or live-cattle (the two highest-alpha
+   validated names, α +0.29 / +0.19).
+2. **CFD swap ceiling (lesson #59 — `scripts/softs_swap_probe.py`):** live long-side financing splits
+   the basket. COCOA ~−0.14%/yr and COFFEE ~+0.13%/yr survive; **COTTON ~−16.9%, CORN ~−17.2%,
+   WHEAT ~−11.2%/yr** are PEAD-redux (swap eats the ~3% gross edge).
+
+So the only Eightcap-tradeable **and** swap-survivable cut is a **COCOA+COFFEE 2-name blend**.
+Re-validated on the long Yahoo continuous series (`COCOA_YF`/`COFFEE_YF`, 2015→2026, swap modelled) via
+`softs_ensemble_eightcap.py`:
+
+| Check | Result | |
+|---|---|---|
+| Blend Sharpe (post-cost, swap on) | **+0.59** | clears +0.30 nominally |
+| Alpha vs B&H basket | +0.24 | PASS |
+| **Regime concentration** | **81.8% in 2023-26** | **FAIL** — W Sh: −0.40 / −1.14 / +0.01 / +0.49 / **+1.67** |
+| **Null-gap (normal − inverse)** | **+0.24** | **FAIL** (need > +0.30) |
+| MDD | −26.9% | over the 25% convention |
+| Corr vs live book (XAU/NDX/GER/JPY) | max \|0.018\| | ~zero — would diversify beautifully |
+| Trades | 170 | PASS |
+
+**Verdict: REJECT for Eightcap standalone deploy.** The full-sample +0.59 is a mirage carried entirely
+by the 2023-2026 soft-commodity bull (cocoa 2024 squeeze, coffee 2024-25 rally) — the same
+one-window-wonder shape as `gold_trend` (lesson #73). The 6-name basket's robustness (Phase-6 flagged,
+but max window-share 51.5%) lived in the names we can't trade: cotton/corn (swap-dead) and
+soybean/live-cattle (not offered). The cruel part — cocoa+coffee is genuinely ~zero-correlated to the
+entire live book, so it would have been an ideal diversifier; uncorrelated noise just isn't alpha.
+
+**softs_ensemble stays VALIDATED_NO_DEPLOY** — the 6-name research result is unchanged and real; it's
+simply not reachable on Eightcap, and the reachable subset doesn't carry it. See lesson #86.
+
+Files: `softs_ensemble_eightcap.py` (subset re-validation), `scripts/softs_swap_probe.py` (CFD
+swap-ceiling probe).

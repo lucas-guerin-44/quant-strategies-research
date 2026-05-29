@@ -29,7 +29,7 @@ sys.path.insert(0, os.path.join(_ROOT, "experiments", "_live", "xau_break_retest
 sys.path.insert(0, os.path.join(_ROOT, "experiments", "_live", "xau_break_retest_h1"))
 sys.path.insert(0, _HERE)
 
-from utils import fetch_ohlc  # noqa: E402
+from data import fetch_ohlc  # noqa: E402
 from structural_flow_audit import (  # noqa: E402
     gen_jpm_collar_dates, compute_window_returns,
     COST_FLOOR_BPS, welch_t,

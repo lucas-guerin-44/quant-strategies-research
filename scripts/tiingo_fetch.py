@@ -59,6 +59,8 @@ def fetch_one(ticker: str, start: str, end: str, api_key: str) -> pd.DataFrame:
         "high": df["adjHigh"].astype(float),
         "low": df["adjLow"].astype(float),
         "close": df["adjClose"].astype(float),
+        "source": "tiingo",
+        "fetched_at": pd.Timestamp.utcnow(),
     })
     out = out.dropna(subset=["open", "high", "low", "close"]).reset_index(drop=True)
     return out

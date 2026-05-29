@@ -36,7 +36,7 @@ sys.path.insert(0, _ROOT)  # research repo root
 sys.path.insert(0, os.path.abspath(os.path.join(_ROOT, '..', 'backtesting-engine-2.0')))  # engine
 sys.path.insert(0, _HERE)  # this strategy's directory
 
-from utils import fetch_ohlc
+from data import fetch_ohlc
 from examples.xs_momentum_validation import run_xs_momentum, load_data as xs_load_data
 
 

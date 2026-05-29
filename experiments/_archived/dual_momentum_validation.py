@@ -27,10 +27,11 @@ import numpy as np
 import pandas as pd
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.dirname(_HERE))  # research repo root
+sys.path.insert(0, os.path.dirname(os.path.dirname(_HERE)))  # repo root, for `import data`
+sys.path.insert(0, os.path.dirname(_HERE))  # experiments/ (sibling experiment imports)
 sys.path.insert(0, os.path.abspath(os.path.join(_HERE, '..', '..', 'backtesting-engine-2.0')))  # engine
 
-from utils import fetch_ohlc
+from data import fetch_ohlc
 
 
 # ----------------------------------------------------------------------

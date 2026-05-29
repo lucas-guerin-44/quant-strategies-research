@@ -27,7 +27,7 @@ sys.path.insert(0, HERE)
 sys.path.insert(0, ENGINE)
 sys.path.insert(0, os.path.join(EXPERIMENTS, "xs_momentum"))  # sibling for xs_momentum_validation
 
-from utils import fetch_ohlc  # noqa: E402
+from data import fetch_ohlc  # noqa: E402
 from xs_momentum_validation import (  # noqa: E402
     load_data as xs_load_data,
     run_xs_momentum,

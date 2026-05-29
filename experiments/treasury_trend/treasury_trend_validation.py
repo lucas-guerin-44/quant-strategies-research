@@ -33,7 +33,7 @@ from treasury_trend_demo import (  # noqa: E402
     START_DATE as DEFAULT_START_DATE,
 )
 from backtesting.statistics import compute_statistical_report  # noqa: E402
-from utils import fetch_ohlc  # noqa: E402
+from data import fetch_ohlc  # noqa: E402
 import pandas as pd  # noqa: E402
 
 

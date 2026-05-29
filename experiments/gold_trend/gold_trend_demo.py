@@ -35,7 +35,7 @@ sys.path.insert(0, _ROOT)
 sys.path.insert(0, os.path.abspath(os.path.join(_ROOT, '..', 'backtesting-engine-2.0')))
 sys.path.insert(0, _HERE)
 
-from utils import fetch_ohlc
+from data import fetch_ohlc
 
 
 # ---------------------------------------------------------------------------

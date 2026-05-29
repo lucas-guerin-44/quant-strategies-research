@@ -35,7 +35,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(_ROOT, '..', 'backtesting-engine
 sys.path.insert(0, _HERE)  # this strategy's directory
 sys.path.insert(0, os.path.join(_EXPERIMENTS, 'xs_momentum'))  # for XS-mom correlation import
 
-from utils import fetch_ohlc
+from data import fetch_ohlc
 
 
 # ---------------------------------------------------------------------------

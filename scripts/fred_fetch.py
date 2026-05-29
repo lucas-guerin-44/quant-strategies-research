@@ -110,6 +110,8 @@ def write_series(ccy: str, df: pd.DataFrame) -> str:
     # Write date as YYYY-MM-DD for cleanliness and easy re-parse.
     out = df.copy()
     out["date"] = out["date"].dt.strftime("%Y-%m-%d")
+    out["source"] = "fred"
+    out["fetched_at"] = pd.Timestamp.now(tz="UTC").isoformat()
     out.to_csv(path, index=False)
     return path
 

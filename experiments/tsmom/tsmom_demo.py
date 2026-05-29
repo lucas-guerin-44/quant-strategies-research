@@ -40,7 +40,7 @@ from backtesting.backtest import Backtester
 from backtesting.portfolio_backtest import PortfolioBacktester, RiskLimits
 from backtesting.statistics import compute_sharpe
 from tsmom_strategy import TimeSeriesMomentumStrategy
-from utils import fetch_ohlc
+from data import fetch_ohlc
 
 
 UNIVERSE = [

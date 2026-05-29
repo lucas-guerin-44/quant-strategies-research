@@ -12,7 +12,6 @@ import time
 from pathlib import Path
 
 import pandas as pd
-import requests
 from dotenv import load_dotenv
 
 _HERE = Path(__file__).resolve().parent
@@ -20,6 +19,7 @@ _ROOT = _HERE.parent.parent
 sys.path.insert(0, str(_ROOT / 'scripts'))
 
 from _datalake import DATA_DIR, inject_to_datalake  # noqa: E402
+from data import get_client  # noqa: E402
 
 
 MISSING = [
@@ -34,9 +34,7 @@ MISSING = [
 
 
 def get_catalog_instruments() -> set[str]:
-    url = os.getenv('DATALAKE_URL'); key = os.getenv('DATALAKE_API_KEY')
-    r = requests.get(f'{url.rstrip("/")}/catalog', headers={'X-API-Key': key}, timeout=30)
-    data = r.json()
+    data = get_client().catalog()
     return {i['instrument'] for i in data['database']['instruments']}
 
 

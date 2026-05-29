@@ -144,6 +144,8 @@ def fetch_bars(display: str, ticker: str, tf_code: str, start: datetime, end: da
         "high": raw["High"].astype(float),
         "low": raw["Low"].astype(float),
         "close": raw["Close"].astype(float),
+        "source": "yahoo",
+        "fetched_at": pd.Timestamp.now("UTC"),
     })
     df = df.dropna(subset=["open", "high", "low", "close"]).reset_index(drop=True)
     return df

@@ -37,7 +37,7 @@ sys.path.insert(0, _ROOT)
 sys.path.insert(0, os.path.abspath(os.path.join(_ROOT, '..', 'backtesting-engine-2.0')))
 sys.path.insert(0, os.path.join(_ROOT, "experiments", "structural_flow_audit"))
 
-from utils import fetch_ohlc  # noqa: E402
+from data import fetch_ohlc  # noqa: E402
 from structural_flow_audit import (  # noqa: E402
     gen_month_end_dates, compute_window_returns, compute_placebo_returns,
 )

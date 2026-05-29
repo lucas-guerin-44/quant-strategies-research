@@ -4,15 +4,15 @@
    
  ‎ ‎ ‎   
    
-| 77 | 55 | 7+1 | 64 | 8 |
+| 101 | 82 | 7+1 | 87 | 8 |
 |:---:|:---:|:---:|:---:|:---:|
-| **strategies tested** | **tombstoned** (71%) | **live** (7 strict + 1 watchlist) | **methodology lessons** | **-phase pipeline** |
+| **strategies tested** | **tombstoned** (81%) | **live** (7 strict + 1 watchlist) | **methodology lessons** | **-phase pipeline** |
    
  ‎ ‎ ‎  
    
-> **Reject rate: 72%.** Each tombstoned strategy ships with a post-mortem naming the failure mode. The few that survived the pipeline are the ones I trust.
+> **Reject rate: 81%.** Each tombstoned strategy ships with a post-mortem naming the failure mode. The few that survived the pipeline are the ones I trust.
 
-Every idea runs through the same 8 phases with kill criteria set *before* the backtest. Bad theses die in hours, not weeks. Survivors go to MT5 paper trading with a research-vs-live calibration loop ([`docs/RESEARCH_NOTES.md`](docs/RESEARCH_NOTES.md) is the rolling log of what each death taught).
+Every idea runs through the same 8 phases with kill criteria set *before* the backtest. Bad theses die in hours, not weeks. Survivors go to MT5 paper trading with a research-vs-live calibration loop ([`docs/STATE_GRAVEYARD.md`](docs/STATE_GRAVEYARD.md) is the public log of each death and its failure mode).
 
 Built on [`backtesting-engine-2.0`](https://github.com/lucas-guerin-44/backtesting-engine). The engine stays clean; this repo is allowed to be messy.
 
@@ -20,6 +20,7 @@ Built on [`backtesting-engine-2.0`](https://github.com/lucas-guerin-44/backtesti
 
 ## Table of contents
 
+- [Navigating this repo (humans & agents)](#navigating-this-repo-humans--agents)
 - [The pipeline](#the-pipeline)
 - [Current status](#current-status)
 - [Deployment platform](#deployment-platform)
@@ -28,6 +29,32 @@ Built on [`backtesting-engine-2.0`](https://github.com/lucas-guerin-44/backtesti
 - [Running an experiment](#running-an-experiment)
 - [Data fetching](#data-fetching)
 - [Key lessons from the graveyard](#key-lessons-from-the-graveyard)
+
+---
+
+## Navigating this repo (humans & agents)
+
+**Public vs private.** This repo is committed, but edge-bearing detail is gitignored.  
+*Public* = the pipeline, the methodology lessons, the graveyard, and the book at **aggregate** level.  
+*Private* (gitignored: `experiments/_live/`, `live_tracking/`, `deploy/`, `ohlc_data/`, `live_data/`) = per-strategy thesis / params / sizing / EA and live tracking.  
+
+**The book is the public unit; the legs are private.**
+
+**Which doc answers what** — load the cheap index, fetch detail on demand:
+
+| Question | Where |
+|---|---|
+| The process & kill criteria | [`docs/WORKFLOW.md`](docs/WORKFLOW.md) |
+| Where are we now — what's live / validated / rejected? | [`docs/STATE.md`](docs/STATE.md) (one-line index) |
+| Why did *X* fail? | [`docs/STATE_GRAVEYARD.md`](docs/STATE_GRAVEYARD.md) → its thesis doc |
+| Why did *X* fail? (public post-mortems) | [`docs/STATE_GRAVEYARD.md`](docs/STATE_GRAVEYARD.md) |
+| What have we learned (cross-experiment)? | `docs/RESEARCH_NOTES.md` (numbered lessons — **private/local-only**; names live mechanisms) |
+| Live-book posture (sizing tiers, gates, cadence, fears) | `docs/BOOK_PLAN.md` (**private**) |
+| Deploy an EA / connect to the VPS | `docs/mq5_deploy.md`, `docs/vps_connect.md` (**private**) |
+| How an agent should *work* here (conventions, don'ts) | `CLAUDE.md` (**private**, auto-loaded each session) |
+
+**Agent query pattern:** grep the index (STATE rows, lesson titles) → open only the one thesis doc or lesson you need.  
+Don't read `RESEARCH_NOTES.md` end-to-end — it's a log; grep it. `CLAUDE.md` is *how to work here*; this README is *what this is and where things live* — they don't overlap.
 
 ---
 
@@ -77,13 +104,15 @@ Two strategies cleared Phases 2-7 but are broker-blocked: **treasury_trend** (no
 
 ### Rejected
 
-55 tombstoned strategies with documented post-mortems. Full table in [`docs/STATE_GRAVEYARD.md`](docs/STATE_GRAVEYARD.md). The patterns that recur — sign-inversion on post-2022 US-index MR, CFD-vs-cash-equity cost gaps, regime-decay on factor strategies — are written up as numbered lessons in [`RESEARCH_NOTES.md`](docs/RESEARCH_NOTES.md).
+82 tombstoned strategies with documented post-mortems. Full table in [`docs/STATE_GRAVEYARD.md`](docs/STATE_GRAVEYARD.md). The patterns that recur — sign-inversion on post-2022 US-index MR, CFD-vs-cash-equity cost gaps, regime-decay on factor strategies — are written up as numbered lessons in `docs/RESEARCH_NOTES.md` (private/local-only).
 
 ---
 
 ## Deployment platform
 
-MetaTrader 5 on a Hetzner VPS (~€8/mo), MQL5 EAs, daily Telegram summary via cron. Autonomous 24/7 once attached. EA source and ops runbooks are private.
+MetaTrader 5 on a Hetzner VPS, MQL5 EAs, daily Telegram summary via cron.  
+Autonomous 24/7 once attached.  
+EA source and ops runbooks are private.
 
 Broker asset access is wide: FX, index CFDs, single-stock CFDs, commodity CFDs, bond CFDs, BTC. The binding constraint is **data-source revalidation**. Research run on Yahoo/Tiingo continuous-futures or cash-ETF data has to be re-run on the broker's MT5 feed before deploy. CFD construction differs enough from cash-equivalent or continuous-front that the edge can vanish (see `dax_overnight` in lesson #22 — research Sh +0.80, FDAX futures Sh -0.34).
 
@@ -197,7 +226,7 @@ python scripts/fred_fetch.py
 
 ## Key lessons from the graveyard
 
-A short selection. The full numbered list (64 lessons) is in [`docs/RESEARCH_NOTES.md`](docs/RESEARCH_NOTES.md).
+A short public selection. The full numbered list (87 lessons) is private (`docs/RESEARCH_NOTES.md`, local-only).
 
 1. **Low correlation ≠ useful diversifier.** A strategy with correlation 0.1 and negative Sharpe subtracts from your book. Correlation alone doesn't justify inclusion; positive standalone Sharpe does.
 
@@ -221,17 +250,17 @@ A short selection. The full numbered list (64 lessons) is in [`docs/RESEARCH_NOT
 
 11. **Intraday CFD costs ≠ cash-equity costs.** ORB on SPX500 M5 failed at Sharpe -0.92 against Zarattini/Aziz (2023) reporting +1.65-2.81 on QQQ. CFD spread ≈ 2× their commission assumption; no real share volume for filters; different instrument. Published intraday results on cash equities don't port 1-1 to retail CFDs even when the mechanism nominally translates.
 
-12. **Don't tombstone based on fade-test alone — retest under symmetric R:R first.** GER40 ORB initially looked artifact-structured (baseline Sh +0.38, fade +0.34). Under fixed 1:1 R:R exits: baseline -0.24, fade -1.21, gap +0.97 — real directional signal. EOD-exit with fixed stop is itself a confound. This one saved the only real intraday edge in the project.
+12. **Don't tombstone based on fade-test alone — retest under symmetric R:R first.** An index opening-range strategy first looked like an exit-structure artifact (baseline and fade Sharpes nearly equal under EOD exit). Under fixed 1:1 R:R exits the directional signal separated cleanly — baseline positive, fade sharply negative. EOD-exit with a fixed stop is itself a confound; this retest saved a real intraday edge the fade-test would have killed.
 
-13. **Cross-instrument fade test separates signal from exit-structure artifact.** Running the same mechanism on SPX500 / NDX100 / GER40 revealed GER40 had the highest absolute Sharpe but near-zero fade-gap under EOD exit (artifact); NDX100 had low absolute Sharpe but fade-gap +0.49 (real signal). Fade-gap is a better edge-quality indicator than absolute Sharpe.
+13. **Cross-instrument fade test separates signal from exit-structure artifact.** Running the same mechanism across several index CFDs, the one with the highest absolute Sharpe had near-zero fade-gap under EOD exit (artifact), while one with lower absolute Sharpe showed a clearly positive fade-gap (real signal). Fade-gap is a better edge-quality indicator than absolute Sharpe.
 
-14. **Time-of-day exit as an alpha discovery tool.** GER40 EOD-exit Sharpe was +0.38; T+180min exit jumped to +0.58. Opening-impulse edge has a half-life of ~3 hours on DAX M5 — holding longer accumulates noise. For any intraday strategy that exits "at EOD because literature does", test a T+60/120/180/240min sweep; often the edge is diluted by over-holding.
+14. **Time-of-day exit as an alpha discovery tool.** Shifting an index opening-impulse strategy from EOD exit to a few-hours-after-open exit materially raised its Sharpe — the opening-impulse edge has a ~3-hour half-life, and holding to the close just accumulates noise. For any intraday strategy that exits "at EOD because the literature does", sweep T+60/120/180/240min; the edge is often diluted by over-holding.
 
 ---
 
 ## Further reading
 
 - [`docs/STATE.md`](docs/STATE.md) — per-experiment verdicts + headline numbers. Start here.
-- [`docs/RESEARCH_NOTES.md`](docs/RESEARCH_NOTES.md) — 64 cross-experiment lessons. Read before designing a new thesis.
+- `docs/RESEARCH_NOTES.md` — 87 cross-experiment lessons (**private/local-only**). Read before designing a new thesis.
 - [`docs/WORKFLOW.md`](docs/WORKFLOW.md) — the 8-phase pipeline with kill thresholds.
 - `experiments/<name>/<name>.md` — strategy-specific thesis, validation, and tombstone.

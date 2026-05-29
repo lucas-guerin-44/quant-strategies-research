@@ -48,6 +48,7 @@ exports/
 deploy/
 /docs/mq5_deploy.md
 /docs/BOOK_PLAN.md
+/docs/RESEARCH_NOTES.md   # methodology lessons name live-strategy mechanisms/sessions — private (2026-05-29)
 
 # Opinionated per-collaborator working notes
 CLAUDE.md
@@ -74,6 +75,9 @@ Trades Report*
 memory/
 .memory/
 
+# Sibling repo ref doc — personal notes, not part of this repo's deliverable
+/docs/backtesting-engine-2.0.md
+
 # Live / deployed-strategy research — edge-bearing, never publish.
 # All currently-live strategies + the portfolio overlay (which depends on
 # their outputs) live under experiments/_live/. Rejected/methodology
@@ -93,5 +97,9 @@ experiments/xau_imbalance_m15/
 # Rest of scripts/ is generic infra and stays public.
 scripts/book_checkup.py
 scripts/plot_track_record.py
+
+# One-shot scripts — completed data-repair episodes, probes, audits, and
+# single-use fetchers. Archived locally, not part of the reusable infra.
+scripts/one-shot/
 
 

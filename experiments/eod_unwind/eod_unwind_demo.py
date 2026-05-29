@@ -44,7 +44,7 @@ _ROOT = os.path.dirname(_EXPERIMENTS)
 sys.path.insert(0, _ROOT)
 sys.path.insert(0, os.path.abspath(os.path.join(_ROOT, '..', 'backtesting-engine-2.0')))
 
-from utils import fetch_ohlc  # noqa: E402
+from data import fetch_ohlc  # noqa: E402
 
 
 # ---------------------------------------------------------------------------

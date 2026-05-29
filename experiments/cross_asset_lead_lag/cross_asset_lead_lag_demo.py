@@ -14,7 +14,7 @@ _ROOT = _EXPERIMENTS.parent
 sys.path.insert(0, str(_ROOT))
 sys.path.insert(0, str(_ROOT.parent / 'backtesting-engine-2.0'))
 
-from utils import fetch_ohlc  # noqa: E402
+from data import fetch_ohlc  # noqa: E402
 
 
 LEADERS = ['USOUSD', 'NDX100', 'SPX500', 'GER40', 'BTCUSD']

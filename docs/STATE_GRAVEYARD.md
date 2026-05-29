@@ -8,10 +8,20 @@ Active state → [STATE.md](STATE.md). Lessons → [RESEARCH_NOTES.md](RESEARCH_
 
 ---
 
-## Intraday CFD (37)
+## Intraday CFD (47)
 
 | name | verdict | killed | Sh full / holdout | dir-gap | load-bearing failure mode | date |
 |---|---|---|---|---|---|---|
+| [jpn225_orb](../experiments/jpn225_orb/jpn225_orb.md) | REJECT | Phase 0b C1 gate | CONT +0.52 zc / W3 +0.68 | +1.04 | Real opening-momentum but C1 delta +0.28<+0.40 — all-session not TSE-open-specific; ORB 0-for-7 outside DAX. | 2026-05-28 |
+| [jpn225_lunch_fade](../experiments/jpn225_lunch_fade/jpn225_lunch_fade.md) | REJECT | Phase 0/1 (C1 gate) | -0.03 / W3 +0.05 | +0.00 | C1 delta +0.27<+0.40 & dir-gap 0; formal cash halt ≠ continuous-lull, removes basis-arb leg (refines #8/#27). | 2026-05-28 |
+| [orb_asx200](../experiments/orb_asx200/orb_asx200.md) | REJECT | Phase 0/1 | +0.04 / **W3 -0.62** | n/a | One-window-wonder (W1 +1.37 only); ASX commodity/financials-heavy like FTSE — ORB still DAX-only (6th non-DAX ORB reject). | 2026-05-28 |
+| [letf_eod_rebalance](../experiments/letf_eod_rebalance/letf_eod_rebalance.md) | REJECT | Phase 0 screen | ~0 net / **W3 neg** | +1.0 to +1.3 (shallow) | LETF-rebalance continuation real but sub-cost; W3 holdout inverts; deep-down days fade (0DTE dip-buy). | 2026-05-28 |
+| [vix_soq_short](../experiments/vix_soq_short/vix_soq_short.md) | REJECT (9/12, deploy-binding fails) | Phase 2 | +0.51 / **W3 -0.06** | +1.33 | One-window-wonder — edge entirely pre-2023 (W1 +5.2/W2 +13.6/W3 -0.4); Griffin-Shams VIX-settlement effect arbed post-publication. | 2026-05-28 |
+| [nr7_breakout_ger40](../experiments/nr7_breakout_ger40/nr7_breakout_ger40.md) | REJECT | Phase 0/1 | +0.04 (pre-fix +2.69) | +0.32 | Phantom gap-through fill alpha; gap-aware fill collapses edge; cost-zero +0.16 signal-absent. Lesson #81 class, 3rd catch. | 2026-05-28 |
+| [megacap_earnings_index_drift](../experiments/megacap_earnings_index_drift/megacap_earnings_index_drift.md) | REJECT | Phase 0/1 | reaction-day SHORT +0.77 | n/a | No sub-test deploy-grade; reaction-day SHORT murky mechanism + earnings-family-adjacent; post-cluster Sh 0.15-0.42. | 2026-05-28 |
+| [xau_imbalance](../experiments/xau_imbalance/xau_imbalance.md) | REJECT (post-tz-fix + geometry-bug fix) | Phase 2 re-eval | +0.56 / W3 ~+1.0 | +5.30 | Most of apparent Sh was phantom "stop fill at stop_level" when retest overshoot put entry past stop; live MT5 rejects invalid stops. Lesson #81. | 2026-05-28 |
+| [xau_imbalance_m15](../experiments/xau_imbalance_m15/xau_imbalance_m15.md) | REJECT (post-tz-fix + geometry-bug fix) | Phase 2 re-eval | +0.66 / W3 ~+1.0 | +3.45 | Same geometry-bug class as M5 sibling; survives bar but adds net-vol drag at portfolio level. Lesson #81. | 2026-05-28 |
+| [xau_break_retest_h1](../experiments/_live/xau_break_retest_h1/xau_break_retest_h1.md) | REJECT (post-geometry-bug fix) | Phase 2 re-eval | -0.74 / W3 ~0 | n/a | 24.6% of trades violated entry-stop geometry on violent retest closes; pre-fix Sh +1.46 was 100%+ phantom alpha. Lesson #81. | 2026-05-28 |
 | orb_spx500 | REJECT | Phase 2 | -0.92 | ~0 | Multi-venue diffuse open dilutes opening-impulse | 2026-04-19 |
 | orb_ndx100 | REJECT | Phase 4 | 0.03 / 0.19 | small | Every refinement that helped GER40 hurt NDX | 2026-04-19 |
 | orb_uk100 | REJECT | Phase 2 | -0.54 | n/a | FTSE commodities-heavy + ADR-priced overnight → no opening-impulse | 2026-04-19 |
@@ -51,6 +61,8 @@ Active state → [STATE.md](STATE.md). Lessons → [RESEARCH_NOTES.md](RESEARCH_
 | [last_hour_month_end_ndx](../experiments/last_hour_month_end_ndx/last_hour_month_end_ndx.md) | REJECT | Phase 2 (7/13) | best-dir SHORT +3.57 bp / W3 +3.52 bp | dir-gap +0.18 | **W2 2021-2022 sign-flip** (SHORT −5.17 / LONG +4.67) — regime-conditional direction inversion via QE-on/off. Lesson #74. | 2026-05-27 |
 | [xau_session_v2_ffr_gated](../experiments/xau_session_v2_ffr_gated/xau_session_v2_ffr_gated.md) | REJECT | Phase 2 (9-10/11) | v2a +1.11 / v2b +1.08 (parent +0.79) | n/a | Fail crit #1 (Sh ≥ +1.20) by 0.10; +1.20 bar over-calibrated to active-aware diagnostic. Lesson #76. | 2026-05-27 |
 | [last_hour_month_end_ndx_v2_vix_gated](../experiments/last_hour_month_end_ndx_v2_vix_gated/last_hour_month_end_ndx_v2_vix_gated.md) | REJECT | Phase 2 (8/10) | CALM-gated SHORT +0.64 (parent +0.29) | dir-gap +0.84 | Fail crit #10 (deflated Sh +0.04 vs +0.20) at n=17. Lesson #76. | 2026-05-27 |
+| [fra40_mid_morning_momentum](../experiments/fra40_mid_morning_momentum/fra40_mid_morning_momentum.md) | REJECT | Phase 2 (3 KILL) | -0.17 / HO +0.33 | +0.79 | Initial PASS Sh +2.05 was a same-bar look-ahead (entry open[N] vs signal close[N]); post-fix fails Sh/MDD/PF. Lesson #77. | 2026-05-27 |
+| [eu_close_auction_fade](../experiments/eu_close_auction_fade/eu_close_auction_fade.md) | REJECT (paired) | Phase 2 (both venues) | FRA40 -1.47 / HO -2.09; GER40 -0.23 / HO -0.43 | FRA40 -0.55 inv; GER40 +0.09 | Auction print continues on FRA40 (Bogousslavsky-Muravyev), no signal on GER40; both cost-eaten at retail M5. Lesson #78. | 2026-05-27 |
 
 ## Single-stock equity (8)
 
@@ -65,13 +77,14 @@ Active state → [STATE.md](STATE.md). Lessons → [RESEARCH_NOTES.md](RESEARCH_
 | [retail_overshoot_fade](../experiments/retail_overshoot_fade/retail_overshoot_fade.md) | REJECT | Phase 2 | -0.26 / W2 +1.30 / **W3 -1.07** | -0.10 | Existed in meme-stock era, inverted post-2024; MDD -70.9% | 2026-05-26 |
 | [sector_rel_strength](../experiments/sector_rel_strength/sector_rel_strength.md) | REJECT — both directions | Phase 2 + universe-ext | mom -0.74; mirror 24n +0.43 → 100n +0.24 | 24n +1.02 inv → 100n +0.70 | Mirror passed 24n / failed 100n — small-sample overfit | 2026-05-22 |
 
-## Daily-frequency multi-asset / FX / equities (19)
+## Daily-frequency multi-asset / FX / equities (22)
 
 (`pre_ecb_drift` and `pre_ecb_drift_eurusd` are intraday CFD by trade structure but classified here for thematic
 grouping with macro-event family.)
 
 | name | verdict | killed | Sh full / holdout | dir-gap | load-bearing failure mode | date |
 |---|---|---|---|---|---|---|
+| [fed_cycle_even_week](../experiments/fed_cycle_even_week/fed_cycle_even_week.md) | REJECT | Phase 0/1 | strat +0.21 vs B&H +0.90 | even−odd −8.0bp | Cieslak 2019 even-week anomaly INVERTED post-publication; premium now in odd weeks; fails B&H gate (#73). | 2026-05-28 |
 | [fx_carry](../experiments/fx_carry/fx_carry.md) | REJECT | Phase 2 | -0.38 | n/a | 2015-2026 carry graveyard — rate convergence + Fed hikes vs EM | N/A |
 | [fx_carry_trend](../experiments/fx_carry_trend/fx_carry_trend.md) | REJECT | Phase 2 | -0.38 | n/a | 3M momentum filter fired sparingly; bad-carry pairs still lost | N/A |
 | [fx_mean_reversion](../experiments/fx_mean_reversion/fx_mean_reversion.md) | REJECT | Phase 2 | -0.17 | n/a | All 12 configs negative; 58.5% WR but avg-loss > avg-win | N/A |
@@ -94,4 +107,6 @@ grouping with macro-event family.)
 | [pre_fomc_drift](../experiments/pre_fomc_drift/pre_fomc_drift.md) | REJECT | Phase 2 | +0.0335% / **W4 -0.07** | +0.75 Sh | FX-side DXY-mirror of NDX-LONG; magnitude-shadow, decays first | 2026-05-26 |
 | [pre_ecb_drift_eurusd](../experiments/pre_ecb_drift_eurusd/pre_ecb_drift_eurusd.md) | REJECT | Phase 2 | +0.050% / **W4 -0.46** | +0.119% | DXY-mirror confirmed on FAIL-primary; pre-tombstones FX-side event extensions | 2026-05-26 |
 | [cfd_wed_rollover_eurusd](../experiments/cfd_wed_rollover_eurusd/cfd_wed_rollover_eurusd.md) | REJECT | Phase 2 | SHORT -0.28 bps / **W3 -1.16** | +1.16 bps | Capacity moat ≠ edge — gross +0.58 bps vs +3-12 bps prior | 2026-05-26 |
+| [crypto_funding_fade](../experiments/crypto_funding_fade/crypto_funding_fade.md) | REJECT | Phase 2 (2/8) | -0.33 / **W3 -0.79** | +1.22 | Funding-fade correctly signed but institutionalised to ~0 post-2022; cost-zero +0.35 eaten by spread. | 2026-05-28 |
 | [month_end_rebal](../experiments/month_end_rebal/month_end_rebal.md) | REJECT | Phase 1 | +0.45 / W2 +0.95 / **W3 -0.01** | +1.05 | Well-known flow arbed by systematic desks; null-gap can flag real-but-arbed | 2026-05-25 |
+| [treasury_auction_drift](../experiments/treasury_auction_drift/treasury_auction_drift.md) | REJECT (paired) | Phase 1 + Phase 2 | NDX +0.70 bp / HO +0.05; SPX +0.69 bp / HO -0.71 | NDX/SPX placebo > event (t -0.90 / -0.89); Phase 2 BTC z neg-Sh | Auction is supply-clearing event not information event; reaction fully arbed sub-second. Lesson #79. | 2026-05-27 |

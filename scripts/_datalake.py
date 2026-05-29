@@ -1,80 +1,47 @@
-"""Shared helpers for data fetchers: CSV merge + datalake injection.
+"""Backward-compatibility shim for the data layer.
 
-Used by ``mt5_fetch.py`` and ``yahoo_fetch.py`` (and any future fetcher).
-Internal module — the leading underscore indicates it is not a public CLI.
+The real implementations moved into the top-level ``data`` package (the research
+repo now owns all data access; see
+``docs/handoffs/HANDOFF_data_layer_and_client.md``). This module re-exports the
+same names so the existing fetchers (``mt5_fetch.py``, ``yahoo_fetch.py``,
+``tiingo_fetch.py``, ``fred_fetch.py``) keep importing from here unchanged.
+
+* CSV helpers (``merge_with_existing``, ``write_csv``, ``DATA_DIR``) come from
+  ``data.csv_cache``.
+* ``inject_to_datalake`` now goes through the robust :class:`data.DatalakeClient`
+  (authed, serialized, retried) instead of a bare ``requests.post``.
 """
 
 from __future__ import annotations
 
-import io
-import os
+import sys
 from pathlib import Path
 
 import pandas as pd
-import requests
 
+# Ensure the repo root (parent of scripts/) is importable as ``data``.
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-DATA_DIR = PROJECT_ROOT / "ohlc_data"
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-CSV_COLUMNS = ["instrument", "timeframe", "timestamp", "open", "high", "low", "close"]
-
-
-def merge_with_existing(df_new: pd.DataFrame, path: Path) -> pd.DataFrame:
-    """Merge new bars into an existing CSV, deduping on timestamp."""
-    if not path.exists() or df_new.empty:
-        return df_new
-
-    df_old = pd.read_csv(path, parse_dates=["timestamp"])
-    df_old["timestamp"] = pd.to_datetime(df_old["timestamp"], utc=True)
-
-    combined = pd.concat([df_old, df_new], ignore_index=True)
-    combined = combined.drop_duplicates(subset="timestamp", keep="last")
-    combined = combined.sort_values("timestamp").reset_index(drop=True)
-    return combined
-
-
-def write_csv(df: pd.DataFrame, path: Path) -> None:
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    df.to_csv(path, index=False)
+from data.csv_cache import CSV_COLUMNS, DATA_DIR, merge_with_existing, write_csv  # noqa: E402,F401
+from data.client import get_client  # noqa: E402
 
 
 def inject_to_datalake(df: pd.DataFrame, instrument: str, timeframe: str) -> int:
-    """POST bars to the datalake as a multipart CSV upload. Returns rows sent.
+    """POST bars to the datalake. Returns rows sent.
 
-    Ingest endpoint expects multipart/form-data with:
-      - ``file``: CSV payload
-      - ``instrument``: form field
-      - ``timeframe``: form field
-    Override the path via ``DATALAKE_INGEST_PATH`` in ``.env`` if needed.
+    Thin wrapper over :meth:`data.DatalakeClient.ingest` (kept for the fetchers'
+    existing import site).
     """
-    if df.empty:
-        return 0
+    return get_client().ingest(df, instrument, timeframe)
 
-    base_url = os.getenv("DATALAKE_URL", "").strip()
-    api_key = os.getenv("DATALAKE_API_KEY", "").strip()
-    ingest_path = os.getenv("DATALAKE_INGEST_PATH", "/ingest").strip()
 
-    if not base_url:
-        raise RuntimeError("DATALAKE_URL is not set; cannot inject to datalake")
-    if not api_key:
-        raise RuntimeError("DATALAKE_API_KEY is not set; cannot inject to datalake")
-
-    url = f"{base_url.rstrip('/')}{ingest_path if ingest_path.startswith('/') else '/' + ingest_path}"
-    headers = {"X-API-Key": api_key}
-
-    buf = io.StringIO()
-    df.to_csv(buf, index=False)
-    csv_bytes = buf.getvalue().encode("utf-8")
-
-    files = {"file": (f"{instrument}_{timeframe}.csv", csv_bytes, "text/csv")}
-    data = {"instrument": instrument, "timeframe": timeframe}
-
-    resp = requests.post(url, files=files, data=data, headers=headers, timeout=120)
-    if not resp.ok:
-        body = resp.text[:2000]
-        raise RuntimeError(
-            f"{resp.status_code} {resp.reason} from {url}\n"
-            f"Sent {len(df)} rows for {instrument} {timeframe}\n"
-            f"Server response: {body}"
-        )
-    return len(df)
+__all__ = [
+    "CSV_COLUMNS",
+    "DATA_DIR",
+    "PROJECT_ROOT",
+    "merge_with_existing",
+    "write_csv",
+    "inject_to_datalake",
+]

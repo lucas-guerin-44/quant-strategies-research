@@ -19,16 +19,19 @@ header (Bearer returns 401). ``scripts/_datalake.py`` now matches.
 from __future__ import annotations
 
 import argparse
-import io
 import os
 import sys
 from pathlib import Path
 
 import pandas as pd
-import requests
 from dotenv import load_dotenv
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from data import get_client  # noqa: E402
+
 DATA_DIR = PROJECT_ROOT / "ohlc_data"
 REQUIRED_COLS = {"instrument", "timeframe", "timestamp", "open", "high", "low", "close"}
 
@@ -39,40 +42,14 @@ REQUIRED_COLS = {"instrument", "timeframe", "timestamp", "open", "high", "low", 
 TF_RANK = {"M1": 0, "M5": 1, "M15": 2, "M30": 3, "H1": 4, "H4": 5, "D1": 6, "W1": 7, "MN1": 8}
 
 
-def fetch_coverage(base_url: str, api_key: str) -> dict[tuple[str, str], pd.Timestamp]:
+def fetch_coverage() -> dict[tuple[str, str], pd.Timestamp]:
     """Return ``{(instrument, timeframe): max_date_utc}`` for everything in the lake."""
-    r = requests.get(
-        f"{base_url.rstrip('/')}/catalog",
-        headers={"X-API-Key": api_key},
-        timeout=60,
-    )
-    r.raise_for_status()
+    payload = get_client().catalog()
     out: dict[tuple[str, str], pd.Timestamp] = {}
-    payload = r.json()
     coverage = payload.get("database", {}).get("coverage") or payload.get("coverage", [])
     for row in coverage:
         out[(row["instrument"], row["timeframe"])] = pd.to_datetime(row["max_date"], utc=True)
     return out
-
-
-def post_csv(
-    base_url: str, api_key: str, df: pd.DataFrame, instrument: str, timeframe: str
-) -> None:
-    buf = io.StringIO()
-    df.to_csv(buf, index=False)
-    files = {
-        "file": (f"{instrument}_{timeframe}.csv", buf.getvalue().encode("utf-8"), "text/csv")
-    }
-    data = {"instrument": instrument, "timeframe": timeframe}
-    r = requests.post(
-        f"{base_url.rstrip('/')}/ingest",
-        headers={"X-API-Key": api_key},
-        files=files,
-        data=data,
-        timeout=300,
-    )
-    if not r.ok:
-        raise RuntimeError(f"{r.status_code} {r.reason}: {r.text[:1000]}")
 
 
 def read_ohlc(path: Path) -> pd.DataFrame | None:
@@ -116,7 +93,7 @@ def main() -> int:
     if not base_url or not api_key:
         sys.exit("DATALAKE_URL and DATALAKE_API_KEY must be set in .env")
 
-    coverage = fetch_coverage(base_url, api_key)
+    coverage = fetch_coverage()
     print(f"Catalog: {len(coverage)} (instrument, timeframe) pairs already in lake")
 
     only = {s.strip() for s in args.only.split(",")} if args.only else None
@@ -196,7 +173,7 @@ def main() -> int:
 
         if args.apply:
             try:
-                post_csv(base_url, api_key, gap, instr, tf)
+                get_client().ingest(gap, instr, tf)
                 sent_pairs += 1
                 sent_rows += len(gap)
             except Exception as e:
